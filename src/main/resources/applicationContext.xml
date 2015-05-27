@@ -14,10 +14,10 @@
 	
 	<context:property-placeholder location="classpath:/application-properties.xml" />
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		p:driverClassName="${database.driverClassName}" 
-		p:url="${database.url}"
-		p:username="${database.username}" 
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		p:driverClass="${database.driverClassName}" 
+		p:jdbcUrl="${database.url}"
+		p:user="${database.username}" 
 		p:password="${database.password}"
 	/>
 
