@@ -106,7 +106,7 @@ public class Question {
 		}
 		
 		List<Answer> anotherAnswers = answers.stream()
-				.filter(a -> a.isSameUser(writer))
+				.filter(a -> !a.isSameUser(writer))
 				.collect(Collectors.toList());
 		return anotherAnswers.isEmpty();
 	}

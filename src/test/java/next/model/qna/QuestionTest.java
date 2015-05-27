@@ -27,10 +27,11 @@ public class QuestionTest {
 		Answer answer1 = new Answer(2L, "writer", "answered", new Date(), questionId);
 		Answer answer2 = new Answer(3L, "writer", "answered", new Date(), questionId);
 		List<Answer> answers = Arrays.asList(answer1, answer2);
-		Question question = new Question(questionId, "writer", "title", "content", new Date(), 0);
+		Question question = new Question(questionId, "writer", "title", "content", new Date(), 2);
 		question = question.withAnswers(answers);
 		
 		// when
+		assertThat(question.canDelete(), is(true));
 	}
 
 	@Test
@@ -40,9 +41,10 @@ public class QuestionTest {
 		Answer answer1 = new Answer(2L, "another", "answered", new Date(), questionId);
 		Answer answer2 = new Answer(3L, "writer", "answered", new Date(), questionId);
 		List<Answer> answers = Arrays.asList(answer1, answer2);
-		Question question = new Question(questionId, "writer", "title", "content", new Date(), 0);
+		Question question = new Question(questionId, "writer", "title", "content", new Date(), 2);
 		question = question.withAnswers(answers);
 		
 		// when
+		assertThat(question.canDelete(), is(false));
 	}
 }

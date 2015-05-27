@@ -1,16 +1,24 @@
 package next.web.qna;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import next.model.qna.Question;
+import next.service.qna.ExistedAnotherUserException;
 import next.service.qna.QnaService;
 
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -82,5 +90,28 @@ public class QuestionController {
 		}
 		qnaService.edit(question, questionId);
 		return "redirect:/";
+	}
+	
+	@RequestMapping(value="/{id}/delete", method=RequestMethod.GET)
+	public void delete(@PathVariable("id") long questionId, Model model, HttpServletResponse response, HttpServletRequest request) throws IOException {
+		logger.debug("delete target Question : {}", questionId);
+		response.setContentType("text/html; charset=utf-8");
+		String referrer = request.getHeader("referer");
+		PrintWriter out = response.getWriter();
+		String script;
+		try {
+			qnaService.delete(questionId);
+		} catch (ExistedAnotherUserException e) {
+			logger.debug("댓글 존재");
+			
+			script = "<script>alert('댓글이 존재해서 삭제할 수 없어요'); location.href='" + referrer + "'</script>";
+			out.print(script);
+			out.flush();
+			out.close();
+		}
+		script = "<script>location.href='http://" +referrer.split("/")[2].split("/")[0] + "';</script>";
+		out.print(script);
+		out.flush();
+		out.close();
 	}
 }
