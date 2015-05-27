@@ -49,7 +49,13 @@
 
 		request.onreadystatechange = function() {
 			if (request.readyState == 4 && request.status == 200) {
-				location.reload(true)
+				var result = request.responseText;
+				result = JSON.parse(result);
+				if(result.status === false) {
+					alert(result.errorMessage);
+					return;
+				}
+				location.reload(true);
 			}
 		}
 
