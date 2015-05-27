@@ -41,20 +41,46 @@ public class QuestionController {
 	@RequestMapping("/form")
 	public String form(Model model) {
 		model.addAttribute("question", new Question());
+		model.addAttribute("mode", "write");
+		return "qna/form";
+	}
+	
+	@RequestMapping("/{questionId}/form")
+	public String editPage(@PathVariable("questionId") Long questionId, Model model) {
+		model.addAttribute("question", qnaService.findById(questionId));
+		model.addAttribute("mode", "edit");
 		return "qna/form";
 	}
 	
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public String save(@Valid Question question, BindingResult bindingResult) {
+	public String save(@Valid Question question, BindingResult bindingResult, Model model) {
 		logger.debug("Question : {}", question);
 		if (bindingResult.hasFieldErrors()) {
 			List<FieldError> errors = bindingResult.getFieldErrors();
 			for (FieldError error : errors) {
 				logger.debug("field : {}, error code : {}", error.getField(), error.getCode());
 			}
+			model.addAttribute("mode", "write");
 			return "qna/form";
 		}
 		qnaService.save(question);
+		return "redirect:/";
+	}
+	
+	@RequestMapping(value="/{id}/edit", method=RequestMethod.POST)
+	public String edit(@Valid Question question, BindingResult bindingResult, @PathVariable("id") long questionId, Model model) {
+		logger.debug("Question : {}", question);
+		if (bindingResult.hasFieldErrors()) {
+			List<FieldError> errors = bindingResult.getFieldErrors();
+			for (FieldError error : errors) {
+				logger.debug("field : {}, error code : {}", error.getField(), error.getCode());
+			}
+			model.addAttribute("mode", "edit");
+			question.setQuestionId(questionId);
+			model.addAttribute("question", question);
+			return "qna/form";
+		}
+		qnaService.edit(question, questionId);
 		return "redirect:/";
 	}
 }
