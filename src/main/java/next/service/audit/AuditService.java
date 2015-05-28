@@ -6,6 +6,8 @@ import next.dao.audit.AuditDao;
 import next.model.audit.AuditObject;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuditService {
@@ -16,6 +18,7 @@ public class AuditService {
 		this.auditDao = auditDao;
 	}
 
+	@Transactional(propagation=Propagation.NESTED)
 	public void log(AuditObject audit) {
 		auditDao.log(audit);
 	}
