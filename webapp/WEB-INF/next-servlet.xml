@@ -33,4 +33,11 @@
         class="org.springframework.context.support.MessageSourceAccessor"
         c:messageSource-ref="messageSource"
     />
+    
+    <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="next.web.PerformanceMeasurement"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 </beans>
